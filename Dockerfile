@@ -14,9 +14,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --production
 
-# Copy app source and static files
-COPY src ./src
-COPY public ./public
+
+# Copy the rest of the application code
+COPY . .
 
 # Set correct permissions
 RUN chown -R appuser:appgroup /usr/src/app
