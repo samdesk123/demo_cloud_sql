@@ -4,9 +4,6 @@ FROM node:18
 # Set working directory
 WORKDIR /usr/src/app
 
-# Install npm (Node.js image comes with npm, but ensure latest version)
-RUN npm install -g npm@latest
-
 # Copy package.json and package-lock.json (if available)
 COPY package*.json ./
 
