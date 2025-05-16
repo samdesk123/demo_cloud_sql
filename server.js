@@ -7,9 +7,11 @@ const port = process.env.PORT || 8080;
 // Replace these with your actual Cloud SQL instance credentials
 const dbConfig = {
   host: '35.202.223.51',         // e.g. '34.168.1.23'
-  user: 'shubham',
-  password: 'Shubham@2020',
-  database: 'democloud'
+  DB_USER: 'shubham',
+  DB_PASS: 'Shubham@2020',
+  DB_NAME: 'democloud',
+  INSTANCE_UNIX_SOCKET: '/cloudsql/digital-aloe-455622-i6:us-central1:democloud',
+  INSTANCE_CONNECTION_NAME:'democloud' 
 };
 // Create a connection to the Cloud SQL database
 const connection = mysql.createConnection(dbConfig);
