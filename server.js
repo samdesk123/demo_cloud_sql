@@ -11,7 +11,7 @@ const dbConfig = {
   password: 'Shubham@2020',
   database: 'democloud'
 };
-
+// Create a connection to the Cloud SQL database
 const connection = mysql.createConnection(dbConfig);
 
 // Connect to the database
