@@ -1,62 +1,39 @@
 const express = require('express');
 const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const path = require('path'); // Add this at the top of the file
-require('dotenv').config();
 
 const app = express();
-const port = 3306;
+const port = process.env.PORT || 3306;
 
-// Middleware to parse form data
-app.use(bodyParser.urlencoded({ extended: true }));
+// Replace these with your actual Cloud SQL instance credentials
+const dbConfig = {
+  host: '35.202.223.51',         // e.g. '34.168.1.23'
+  user: 'shubham',
+  password: 'Shubham@2020',
+  database: 'democloud'
+};
 
-// Cloud SQL database connection
-const db = mysql.createConnection({
-    host: '35.202.223.51', // Replace with your Cloud SQL instance IP or hostname
-    user: 'shubham', // Replace with your Cloud SQL username
-    password: 'Shubham@2020', // Replace with your Cloud SQL password
-    database: 'democloud', // Replace with your Cloud SQL database name
-});
+const connection = mysql.createConnection(dbConfig);
 
 // Connect to the database
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        process.exit(1);
-    }
-    console.log('Connected to the Cloud SQL database.');
+connection.connect(err => {
+  if (err) {
+    console.error('Database connection failed:', err.stack);
+    return;
+  }
+  console.log('Connected to Cloud SQL MySQL database.');
 });
 
-// Route to serve the form
+// Sample route
 app.get('/', (req, res) => {
-    const filePath = path.join(__dirname, 'form.html');
-    console.log('Serving file from:', filePath);
-    res.sendFile(filePath);
+  connection.query('SELECT NOW() AS now', (error, results) => {
+    if (error) {
+      res.status(500).send('Database query failed.');
+    } else {
+      res.send(`Database time: ${results[0].now}`);
+    }
+  });
 });
 
-// Route to handle form submissions
-app.post('/submit', (req, res) => {
-    const { name, email } = req.body;
-
-    // Insert form data into the database
-    const query = 'INSERT INTO submissions (name, email) VALUES (?, ?)';
-    db.query(query, [name, email], (err, result) => {
-        if (err) {
-            console.error('Error inserting data:', err);
-            return res.status(500).send('An error occurred while saving your data.');
-        }
-        // Redirect to the Thank You page
-        res.redirect('/thankyou');
-    });
-});
-
-// Route to serve the Thank You page
-app.get('/thankyou', (req, res) => {
-    res.sendFile(path.join(__dirname, 'thankyou.html'));
-});
-
-// Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

@@ -1,36 +1,18 @@
-# Use Node.js LTS (Long Term Support) version
-FROM node:18-slim
+# Use official Node.js LTS base image
+FROM node:18
 
-# Create app directory
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /app
 
-# Create a non-root user
-RUN addgroup --system appgroup && \
-    adduser --system --ingroup appgroup appuser
-
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install dependencies
-RUN npm install --production
-
-
-# Copy the rest of the application code
+# Copy source code
 COPY . .
 
-# Set correct permissions
-RUN chown -R appuser:appgroup /usr/src/app
+# Expose port (same as used in server.js)
+EXPOSE 3000
 
-# Switch to non-root user
-USER appuser
-
-# Expose the port the app runs on
-ENV PORT=8080
-EXPOSE 8080
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:8080/_health || exit 1
-
-# Start the application
-CMD [ "node", "src/server.js" ] 
+# Start the app
+CMD ["node", "server.js"]
