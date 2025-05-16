@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 8080;
 
 // Replace these with your actual Cloud SQL instance credentials
 const dbConfig = {
